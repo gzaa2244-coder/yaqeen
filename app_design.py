@@ -1664,7 +1664,22 @@ def get_client():
     if not key or not key.isascii() or " " in key:
         return None
     # مهلة 40 ثانية لكل طلب بدل الانتظار بلا نهاية
-    return genai.Client(api_key=key, http_options=types.HttpOptions(timeout=40_000))
+    return genai.Client(api_key=key, http_options=types.HttpOptions(timeout=30_000))
+
+
+@st.cache_resource
+def model_memory():
+    """يتذكر النموذج اللي اشتغل، والنماذج الغير موجودة، عشان الرد يكون أسرع"""
+    return {"good": None, "bad": set()}
+
+
+def ordered_models():
+    mem = model_memory()
+    order = [m for m in MODELS if m not in mem["bad"]] or list(MODELS)
+    if mem["good"] in order:
+        order.remove(mem["good"])
+        order.insert(0, mem["good"])
+    return order
 
 
 def _make_configs(types, system_prompt):
@@ -1709,7 +1724,7 @@ def stream_answer(mode: str, messages: list):
             if not last_error or not ("503" in last_error or "UNAVAILABLE" in last_error or "overloaded" in last_error.lower()):
                 break
             time.sleep(3 * attempt)  # ينتظر 3 ثواني ثم 6
-        for model in MODELS:
+        for model in ordered_models():
             for config in configs:
                 got_text = False
                 try:
@@ -1718,6 +1733,7 @@ def stream_answer(mode: str, messages: list):
                             got_text = True
                             yield chunk.text
                     if got_text:
+                        model_memory()["good"] = model  # نبدأ فيه المرة الجاية
                         return
                     break  # رد فاضي: جرّب النموذج التالي
                 except Exception as e:
@@ -1728,6 +1744,11 @@ def stream_answer(mode: str, messages: list):
                     if "401" in last_error or "UNAUTHENTICATED" in last_error or "API key" in last_error:
                         yield "⚠️ مفتاح API غير صالح. أنشئ مفتاحًا جديدًا من Google AI Studio وضعه في `.streamlit/secrets.toml`."
                         return
+                    if "404" in last_error or "NOT_FOUND" in last_error:
+                        model_memory()["bad"].add(model)  # غير موجود: ما نجربه مرة ثانية
+                        if model_memory()["good"] == model:
+                            model_memory()["good"] = None
+                        break
                     if "INVALID_ARGUMENT" in last_error or "400" in last_error:
                         continue  # غالبًا إعداد التفكير غير مدعوم: جرّب الإعداد العادي
                     break  # مزدحم أو غير موجود أو انتهت المهلة: النموذج التالي
