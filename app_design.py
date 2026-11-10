@@ -18,8 +18,9 @@ st.set_page_config(
     initial_sidebar_state="collapsed",
 )
 
-PAGES = ["🏠 الرئيسية", "💬 اسأل نور", "🤝 قاعة الحوار", "📖 القرآن الكريم", "🕌 الصلاة والمساجد"]
-PAGE_KEYS = {PAGES[0]: "home", PAGES[1]: "qa", PAGES[2]: "dialogue", PAGES[3]: "quran", PAGES[4]: "prayer"}
+PAGES = ["🏠 الرئيسية", "💬 اسأل نور", "🤝 قاعة الحوار", "📖 القرآن الكريم", "🕌 الصلاة والمساجد", "📿 الأذكار", "🏆 إنجازاتي"]
+PAGE_KEYS = {PAGES[0]: "home", PAGES[1]: "qa", PAGES[2]: "dialogue", PAGES[3]: "quran", PAGES[4]: "prayer",
+             PAGES[5]: "adhkar", PAGES[6]: "achieve"}
 
 # =====================================================
 # 2) التصميم — نهاري (مريمي وكريمي) وليلي (فحمي وذهبي)
@@ -228,6 +229,7 @@ CSS = """
 [class*="st-key-card_"] .stButton > button:hover{ color:var(--accent) !important; transform:translateX(-4px); }
 .st-key-card_1{ animation-delay:.1s; } .st-key-card_2{ animation-delay:.2s; } .st-key-card_3{ animation-delay:.3s; }
 .st-key-card_4{ animation-delay:.4s; } .st-key-card_5{ animation-delay:.5s; }
+.st-key-card_6{ animation-delay:.6s; } .st-key-card_7{ animation-delay:.7s; } .st-key-card_8{ animation-delay:.8s; }
 
 .section-title{ display:flex; align-items:center; gap:.8rem; color:var(--gold-light); font-weight:700; font-size:1.1rem; margin:1.6rem 0 .8rem; }
 .section-title::after{ content:""; flex:1; height:1px; background:linear-gradient(90deg, var(--border), transparent); }
@@ -307,8 +309,32 @@ iframe{ background:transparent !important; color-scheme:normal; }
 @media (max-width:1500px){
   [data-testid="stMainBlockContainer"], .main .block-container{ padding-right:125px !important; }
 }
+/* ===== الجوال: نستغل عرض الشاشة كامل ===== */
 @media (max-width:760px){
-  [data-testid="stMainBlockContainer"], .main .block-container{ padding-right:70px !important; padding-left:12px !important; }
+  [data-testid="stMainBlockContainer"], .main .block-container{
+    padding-right:10px !important; padding-left:10px !important; padding-top:3.4rem !important; padding-bottom:9rem !important; }
+  [data-testid="stBottomBlockContainer"]{ padding-left:10px !important; padding-right:10px !important; }
+  /* شريط التنقل: سطر واحد يتمرر بالإصبع بدل ما ياخذ نص الشاشة */
+  .st-key-topnav{ padding:.35rem .4rem; border-radius:16px; margin-bottom:.9rem; }
+  .st-key-topnav [data-testid="stColumn"]:first-child{ display:none; }
+  .st-key-topnav [role="radiogroup"]{ flex-wrap:nowrap !important; overflow-x:auto; scrollbar-width:none; -webkit-overflow-scrolling:touch; }
+  .st-key-topnav [role="radiogroup"]::-webkit-scrollbar{ display:none; }
+  .st-key-topnav [role="radiogroup"] label{ flex:none; padding:.3rem .75rem; }
+  .st-key-topnav [role="radiogroup"] label p{ font-size:.85rem; white-space:nowrap; }
+  .st-key-qtabs [role="radiogroup"] label{ padding:.3rem .7rem; }
+  .st-key-qtabs [role="radiogroup"] label p{ font-size:.82rem; }
+  /* الرسائل: بدون أيقونة جانبية عشان النص ياخذ العرض كامل */
+  [data-testid="stChatMessage"]{ padding:.8rem .85rem; border-radius:16px; }
+  [data-testid="stChatMessage"] > div:first-child:not([data-testid]){ display:none; }
+  .stMarkdown p, .stMarkdown li{ font-size:1rem; line-height:1.95; }
+  .stMarkdown h1{ font-size:1.4rem; } .stMarkdown h2{ font-size:1.25rem; } .stMarkdown h3{ font-size:1.1rem; }
+  .stMarkdown ul, .stMarkdown ol{ padding-right:1.1rem; }
+  .stMarkdown pre, .stMarkdown table{ max-width:100%; overflow-x:auto; display:block; }
+  .hero{ margin:.2rem 0 1rem; }
+  .hero p{ font-size:.95rem !important; }
+  .hero .ornament::before, .hero .ornament::after{ width:70px; }
+  .st-key-suggest .stButton > button{ min-height:56px; font-size:.92rem; }
+  [class*="st-key-card_"]{ padding:1rem 1rem .5rem; }
   .hero-wrap{ grid-template-columns:1fr; }
   .hero-side{ display:none; }
   .arch .verse{ font-size:1.9rem; }
@@ -340,7 +366,7 @@ st.markdown(CSS, unsafe_allow_html=True)
 # =====================================================
 MASCOT_JS = r"""
 (function () {
-  if (window.__yaqeenV4) return;
+  if (window.__yaqeenV6) return;
   const D = document, H = D.documentElement;
   ['yq-mascot', 'yq-glow', 'yq-stars', 'yq-theme', 'yq-ask'].forEach(id => { const o = D.getElementById(id); if (o) o.remove(); });
 
@@ -384,9 +410,12 @@ MASCOT_JS = r"""
   #yq-ask button{font-family:inherit;border-radius:999px;padding:7px 14px;font-weight:700;cursor:pointer;border:1px solid var(--gold);font-size:.85rem}
   #yq-ask .yes{background:var(--gold);color:var(--on-gold)}
   #yq-ask .no{background:transparent;color:var(--gold-light)}
-  @media (max-width:760px){#yq-ask{bottom:200px;right:12px}}
-  @media (max-width:760px){#yq-glow{display:none}#yq-mascot{width:56px}.yq-bubble{width:180px;font-size:.8rem}
-    .yq-voice{width:30px;height:30px;font-size:13px}#yq-theme{width:36px;height:36px;font-size:16px}}
+  @media (max-width:760px){#yq-ask{bottom:150px;right:10px;left:10px;width:auto}}
+  @media (max-width:760px){#yq-glow{display:none}#yq-mascot{width:46px}.yq-bubble{width:200px;font-size:.8rem}
+    .yq-voice{width:28px;height:28px;font-size:12px}#yq-theme{width:36px;height:36px;font-size:16px;top:8px;right:10px}}
+  #yq-mascot.mob .yq-bubble{right:auto;left:0}
+  #yq-mascot.mob .yq-bubble::after{right:auto;left:16px}
+  #yq-mascot.mob .yq-voice{left:auto;right:-12px}
   `;
   const style = D.createElement('style'); style.textContent = css; D.head.appendChild(style);
 
@@ -510,7 +539,10 @@ MASCOT_JS = r"""
   // نور ثابت في الزاوية تحت يمين، فوق مربع الكتابة
   const mouse = { x: innerWidth / 2, y: innerHeight / 2 };
   const size = () => { const r = body.getBoundingClientRect(); return { w: r.width || 92, h: r.height || 130 }; };
-  const home = () => { const s = size(); return { x: innerWidth - s.w - 18, y: innerHeight - s.h - 115 }; };
+  const isMob = () => innerWidth <= 760;
+  // الكمبيوتر: تحت يمين. الجوال: تحت يسار وصغير عشان ما يغطي الكلام
+  const home = () => { const s = size(); root.classList.toggle('mob', isMob());
+    return isMob() ? { x: 8, y: innerHeight - s.h - 100 } : { x: innerWidth - s.w - 18, y: innerHeight - s.h - 115 }; };
   const pos = home();
   let tilt = 0;
 
@@ -591,6 +623,8 @@ MASCOT_JS = r"""
     'جرّب قسم القرآن الكريم واستمع لقارئك المفضّل 📖',
     'تقدر تشوف مواقيت الصلاة وأقرب مسجد لك من قسم الصلاة 🕌',
     'زر ☀️/🌙 فوق يغيّر بين الوضع النهاري والليلي.',
+    'جرّب المسبحة في قسم الأذكار 📿 وشوف إنجازاتك في 🏆',
+    'اضغط على أي آية في المصحف وأوريك تفسيرها 📖',
     '«وقل رب زدني علمًا» — العلم نور.'
   ];
   let tipIdx = 0;
@@ -689,6 +723,38 @@ MASCOT_JS = r"""
         }
         if (showing === sk && now >= end) hide();
       }
+      // ===== تذكير أذكار الصباح والمساء =====
+      const adh = (S.get('yq-adhkar') || {})[k] || {};
+      const WIN = [['morning', 'Fajr', 'Dhuhr', '🌅 حان وقت <b>أذكار الصباح</b>، تبي نقرأها مع بعض؟'],
+                   ['evening', 'Asr', 'Isha', '🌇 حان وقت <b>أذكار المساء</b>، تبي نقرأها مع بعض؟']];
+      for (const [cat, from, to, q] of WIN) {
+        const sk = k + '-adh-' + cat;
+        if (adh[cat]) { if (showing === sk) hide(); continue; }
+        const a1 = new Date(at(T[from]).getTime() + 25 * 60000), a2 = at(T[to]);
+        if (now >= a1 && now < a2) {
+          if (showing === sk) return;
+          if (sn[sk] && Date.now() < sn[sk]) continue;
+          askAdhkar(cat, sk, q); return;
+        }
+      }
+    }
+    function askAdhkar(cat, sk, q) {
+      showing = sk;
+      const sn = S.get('yq-ask') || {}; sn[sk] = Date.now() + 60 * 60000; S.set('yq-ask', sn);
+      root.classList.remove('show');
+      card.innerHTML = `<div class="q">${q}</div><div class="row"><button class="yes">📿 افتح الأذكار</button><button class="no">لاحقًا</button></div>`;
+      card.classList.add('show');
+      talking(true); setTimeout(() => talking(false), 900);
+      card.querySelector('.yes').onclick = () => {
+        hide();
+        try { localStorage.setItem('yq-adh-tab-once', JSON.stringify(cat)); } catch (e) {}
+        const lb = [...D.querySelectorAll('.st-key-topnav label')].find(x => x.textContent.includes('الأذكار'));
+        if (lb) lb.click();
+      };
+      card.querySelector('.no').onclick = () => { hide(); say('تمام، بذكّرك بعد ساعة إن شاء الله 🌿'); };
+      if (D.hidden && 'Notification' in window && Notification.permission === 'granted') {
+        try { const n = new Notification('منصة اليقين 🌿', { body: q.replace(/<[^>]+>/g, ''), tag: 'yq-' + sk }); n.onclick = () => { window.focus(); n.close(); }; } catch (e) {}
+      }
     }
     // تنظيف التذكيرات القديمة
     try { const sn = S.get('yq-ask') || {}; const k = dkey(new Date()); Object.keys(sn).forEach(x => { if (!x.startsWith(k)) delete sn[x]; }); S.set('yq-ask', sn); } catch (e) {}
@@ -697,7 +763,7 @@ MASCOT_JS = r"""
   })();
 
   let last = { id: -1, section: null };
-  window.__yaqeenV4 = {
+  window.__yaqeenV6 = {
     update(state) {
       if (!state) return;
       if (state.section !== last.section) {
@@ -768,12 +834,12 @@ def mascot(state_id: str, kind: str, section: str, greeting: str = "", text: str
 (function () {
   var P = (window.parent && window.parent !== window) ? window.parent : window;
   try {
-    if (!P.__yaqeenV4) {
+    if (!P.__yaqeenV6) {
       var s = P.document.createElement('script');
       s.textContent = CODE;
       P.document.head.appendChild(s);
     }
-    P.__yaqeenV4 && P.__yaqeenV4.update(STATE);
+    P.__yaqeenV6 && P.__yaqeenV6.update(STATE);
   } catch (e) { console.error('Yaqeen mascot:', e); }
 })();
 </script>
@@ -1402,6 +1468,30 @@ input[type=number]{width:90px;text-align:center}
   background:linear-gradient(90deg,transparent,var(--gold-soft),transparent);font-family:'Amiri',serif;font-weight:700;color:var(--gold-l);font-size:1.3rem}
 .basm{text-align:center;font-family:'Amiri Quran','Amiri',serif;font-size:calc(var(--fs,1.75rem)*.9);color:var(--gold-l);margin:4px 0 8px}
 .pfoot{text-align:center;color:var(--muted);font-size:.85rem;margin-top:10px}
+.rtop2{display:flex;gap:8px;flex-wrap:wrap;align-items:center;justify-content:space-between;margin-bottom:12px}
+.srch{display:flex;gap:6px;flex:1;min-width:220px}
+.srch input{flex:1;font-family:inherit;background:var(--surface-2);color:var(--text);border:1px solid var(--border);border-radius:999px;padding:7px 14px;font-size:.9rem;outline:none}
+.srch input:focus{border-color:var(--border-s);box-shadow:0 0 0 3px var(--gold-soft)}
+.cont{font-size:.8rem;color:var(--muted);display:flex;align-items:center;gap:4px;cursor:pointer}
+.hint2{font-size:.78rem;color:var(--muted);text-align:center;margin-bottom:8px}
+.ay{cursor:pointer;border-radius:10px;transition:background .3s,box-shadow .3s;padding:0 2px}
+.ay:hover{background:var(--gold-soft)}
+.ay.sel{background:var(--accent-soft);box-shadow:0 0 0 2px var(--accent-soft)}
+.ay.playing{background:var(--gold-soft);box-shadow:0 0 0 3px var(--gold-soft)}
+.ay.playing .an{background:var(--gold);color:var(--on-gold)}
+.ay.flash{animation:flash 1.6s ease 2}
+@keyframes flash{50%{background:var(--gold-soft);box-shadow:0 0 0 6px var(--gold-soft)}}
+.tf{margin-top:12px;border:1px solid var(--accent);background:var(--accent-soft);border-radius:18px;padding:14px 16px;animation:rise .4s ease both}
+.tfh{display:flex;justify-content:space-between;align-items:center;gap:8px;flex-wrap:wrap;margin-bottom:6px}
+.tfh b{color:var(--gold-l)}
+.tft{line-height:2.1;font-size:1rem;margin-bottom:10px}
+.sr{margin-bottom:12px;border:1px solid var(--border-s);border-radius:18px;padding:12px;background:var(--surface-2);max-height:420px;overflow:auto}
+.srh{display:flex;justify-content:space-between;align-items:center;margin-bottom:8px;color:var(--gold-l)}
+.sri{padding:9px 10px;border-radius:12px;cursor:pointer;border:1px solid transparent;transition:all .2s;line-height:1.9}
+.sri:hover{border-color:var(--border-s);background:var(--surface)}
+.srn{display:inline-block;font-size:.75rem;font-weight:700;color:var(--accent);background:var(--accent-soft);border-radius:999px;padding:1px 10px;margin-left:8px}
+.srt{font-family:'Amiri',serif;font-size:1.1rem}
+mark{background:var(--gold-soft);color:var(--gold-l);border-radius:4px;padding:0 2px}
 .mark{display:flex;justify-content:center;margin-top:12px}
 @media (max-width:720px){.pl{grid-template-columns:1fr;justify-items:center;text-align:center}.page{padding:16px 14px}.stat{justify-content:center}}
 </style></head><body>
@@ -1416,8 +1506,20 @@ input[type=number]{width:90px;text-align:center}
     </div>
     <div class="row"><button class="btn" id="fminus">أ−</button><button class="btn" id="fplus">أ+</button></div>
   </div>
+  <div class="rtop2">
+    <div class="srch"><input id="sq" placeholder="🔍 ابحث عن كلمة في القرآن..."><button class="btn" id="sgo">بحث</button></div>
+    <div class="row">
+      <select id="rec"><option value="ar.alafasy">مشاري العفاسي</option><option value="ar.mahermuaiqly">ماهر المعيقلي</option>
+        <option value="ar.husary">محمود خليل الحصري</option><option value="ar.minshawi">محمد صديق المنشاوي</option></select>
+      <button class="btn" id="play">▶️ استمع للصفحة</button>
+      <label class="cont"><input type="checkbox" id="cont"> أكمل للصفحة التالية</label>
+    </div>
+  </div>
+  <div class="sr" id="sr" style="display:none"></div>
   <div class="banner" id="banner"></div>
+  <div class="hint2">👆 اضغط على أي آية لتشوف تفسيرها أو تسمعها</div>
   <div class="page" id="page"></div>
+  <div class="tf" id="tf" style="display:none"></div>
   <div class="pfoot" id="pfoot"></div>
 </div>
 <script>
@@ -1526,6 +1628,8 @@ function renderPlan(){
     const add = M2.need > 0 ? M2.need : Math.max(1, Math.ceil(M2.per));
     P2.done = Math.min(M2.total, P2.done + add);
     const k = dkey(new Date()); P2.log[k] = (P2.log[k] || 0) + add;
+    const W = store.get('yq-wird-log') || {}; W[k] = (W[k] || 0) + add; store.set('yq-wird-log', W);
+    if (P2.done >= M2.total) { const key = P2.type === 'hifz' ? 'yq-hifz-done' : 'yq-khatmas'; store.set(key, (store.get(key) || 0) + 1); }
     store.set('yq-plan', P2); renderPlan();
   };
   $('#cancel').onclick = () => {
@@ -1550,8 +1654,10 @@ async function fetchPage(p){
   cache[p] = j.data; return j.data;
 }
 
-async function goPage(p){
+async function goPage(p, keepAudio){
   p = Math.min(604, Math.max(1, parseInt(p) || 1)); cur = p; store.set('yq-mp', p); $('#pin').value = p;
+  if (!keepAudio) stopPlay();
+  $('#tf').style.display = 'none';
   const box = $('#page');
   if (!cache[p]) box.innerHTML = '<div class="msg" style="text-align:center;padding-top:40px">جاري تحميل الصفحة <span class="spin">⏳</span></div>';
   try {
@@ -1559,8 +1665,8 @@ async function goPage(p){
     if (cur !== p) return;
     let html = '', para = '';
     const flush = () => { if (para) { html += `<p class="ptext">${para}</p>`; para = ''; } };
-    for (const a of d.ayahs) {
-      let t = a.text.replace(/﻿/g, '');
+    for (const [idx, a] of d.ayahs.entries()) {
+      let t = a.text.replace(/\uFEFF/g, '');
       const s = a.surah.number;
       if (a.numberInSurah === 1) {
         flush();
@@ -1570,10 +1676,18 @@ async function goPage(p){
           if (w.length > 4 && w[0].startsWith('بِس')) { html += `<div class="basm">${esc(w.slice(0, 4).join(' '))}</div>`; t = w.slice(4).join(' '); }
         }
       }
-      para += `${esc(t)} <span class="an">${toAr(a.numberInSurah)}</span> `;
+      para += `<span class="ay" data-i="${idx}">${esc(t)} <span class="an">${toAr(a.numberInSurah)}</span></span> `;
     }
     flush();
     box.innerHTML = html;
+    curAyahs = d.ayahs;
+    box.querySelectorAll('.ay').forEach(el => el.onclick = () => showTafsir(+el.dataset.i));
+    if (pendingHL) {
+      const i = d.ayahs.findIndex(a => a.surah.number === pendingHL.s && a.numberInSurah === pendingHL.a);
+      pendingHL = null;
+      if (i >= 0) { const el = mark(i, 'sel'); if (el) { el.classList.add('flash'); setTimeout(() => el.scrollIntoView({behavior:'smooth', block:'center'}), 200); } }
+    }
+    if (keepAudio && playing) playIdx(0);
     const f = d.ayahs[0];
     $('#pfoot').textContent = `الجزء ${toAr(f.juz)} · صفحة ${toAr(p)}`;
     $('#sura').value = f.surah.number;
@@ -1583,6 +1697,89 @@ async function goPage(p){
     $('#retry').onclick = () => goPage(p);
   }
 }
+
+// ===== التفسير الميسّر + الاستماع آية آية + البحث =====
+let curAyahs = [], playing = false, pIdx = -1, pendingHL = null;
+let reciter = store.get('yq-rec') || 'ar.alafasy', contNext = store.get('yq-cont') === true;
+const player = new Audio();
+$('#rec').value = reciter; $('#cont').checked = contNext;
+$('#rec').onchange = e => { reciter = e.target.value; store.set('yq-rec', reciter); if (playing) playIdx(Math.max(0, pIdx)); };
+$('#cont').onchange = e => { contNext = e.target.checked; store.set('yq-cont', contNext); };
+const AUD = n => `https://cdn.islamic.network/quran/audio/128/${reciter}/${n}.mp3`;
+function mark(i, cls){
+  document.querySelectorAll('.ay.' + cls).forEach(x => x.classList.remove(cls));
+  if (i < 0) return null;
+  const el = document.querySelector(`.ay[data-i="${i}"]`); if (el) el.classList.add(cls); return el;
+}
+function paintPlay(){ $('#play').textContent = playing ? '⏸ إيقاف' : '▶️ استمع للصفحة'; $('#play').classList.toggle('on', playing); }
+function playIdx(i){
+  if (i >= curAyahs.length) { if (contNext && cur < 604) goPage(cur + 1, true); else stopPlay(); return; }
+  pIdx = i;
+  const el = mark(i, 'playing'); if (el) el.scrollIntoView({behavior:'smooth', block:'center'});
+  player.src = AUD(curAyahs[i].number);
+  player.play().catch(() => stopPlay());
+}
+function stopPlay(){ playing = false; try { player.pause(); } catch(e) {} mark(-1, 'playing'); paintPlay(); }
+function playOne(i){
+  playing = false; paintPlay(); pIdx = i; mark(i, 'playing');
+  player.src = AUD(curAyahs[i].number); player.play().catch(() => {});
+}
+player.onended = () => { if (playing) playIdx(pIdx + 1); else mark(-1, 'playing'); };
+player.onerror = () => { if (playing) playIdx(pIdx + 1); };
+$('#play').onclick = () => {
+  if (playing) return stopPlay();
+  playing = true; paintPlay();
+  const sel = document.querySelector('.ay.sel'); playIdx(sel ? +sel.dataset.i : 0);
+};
+
+async function showTafsir(i){
+  const a = curAyahs[i]; if (!a) return;
+  mark(i, 'sel');
+  const box = $('#tf'); box.style.display = 'block';
+  box.innerHTML = `<div class="tfh"><b>تفسير الآية ${toAr(a.numberInSurah)} — سورة ${S[a.surah.number - 1]}</b><span class="muted" style="font-size:.75rem">التفسير الميسّر</span></div>
+    <div class="tft">جاري التحميل <span class="spin">⏳</span></div>
+    <div class="row"><button class="btn" id="tfplay">🔊 استمع للآية</button><button class="btn" id="tfgo">▶️ اقرأ من هنا</button><button class="btn" id="tfclose">✕ إغلاق</button></div>`;
+  $('#tfclose').onclick = () => { box.style.display = 'none'; mark(-1, 'sel'); };
+  $('#tfplay').onclick = () => playOne(i);
+  $('#tfgo').onclick = () => { playing = true; paintPlay(); playIdx(i); };
+  setTimeout(() => box.scrollIntoView({behavior:'smooth', block:'nearest'}), 50);
+  try {
+    const j = await withTimeout(fetch(`https://api.alquran.cloud/v1/ayah/${a.number}/ar.muyassar`).then(r => r.json()), 12000);
+    box.querySelector('.tft').textContent = j.data.text;
+  } catch(e) { box.querySelector('.tft').textContent = 'تعذّر تحميل التفسير، حاول مرة ثانية.'; }
+}
+
+const TASHKEEL = new RegExp('[\\u064B-\\u065F\\u0670\\u06D6-\\u06ED\\u0640]', 'g');
+const strip = t => t.replace(TASHKEEL, '').replace(/[أإآٱ]/g, 'ا');
+const reEsc = t => t.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+async function searchQ(){
+  const raw = $('#sq').value.trim(), q = strip(raw);
+  const box = $('#sr');
+  box.style.display = 'block';
+  if (q.length < 2) { box.innerHTML = '<div class="msg">اكتب كلمة من حرفين أو أكثر.</div>'; return; }
+  box.innerHTML = '<div class="msg">جاري البحث <span class="spin">⏳</span></div>';
+  try {
+    const j = await withTimeout(fetch(`https://api.alquran.cloud/v1/search/${encodeURIComponent(q)}/all/quran-simple-clean`).then(r => r.json()), 15000);
+    const m = (j && j.data && j.data.matches) || [];
+    if (!m.length) {
+      box.innerHTML = `<div class="srh"><b>ما لقيت نتائج لـ «${esc(raw)}»</b><button class="btn" id="srx">✕</button></div><div class="msg">جرّب كلمة ثانية أو اكتبها بشكل مختلف.</div>`;
+    } else {
+      const re = new RegExp(reEsc(q), 'g');
+      box.innerHTML = `<div class="srh"><b>${toAr(j.data.count)} نتيجة لـ «${esc(raw)}»</b><button class="btn" id="srx">✕</button></div>` +
+        m.slice(0, 80).map(x => `<div class="sri" data-s="${x.surah.number}" data-a="${x.numberInSurah}"><span class="srn">${S[x.surah.number - 1]} ${toAr(x.numberInSurah)}</span><span class="srt">${esc(x.text).replace(re, '<mark>$&</mark>')}</span></div>`).join('');
+      box.querySelectorAll('.sri').forEach(el => el.onclick = () => openAyah(+el.dataset.s, +el.dataset.a));
+    }
+    $('#srx').onclick = () => { box.style.display = 'none'; };
+  } catch(e) { box.innerHTML = '<div class="msg">تعذّر البحث الآن، حاول بعد قليل.</div>'; }
+}
+async function openAyah(s, a){
+  try {
+    const j = await withTimeout(fetch(`https://api.alquran.cloud/v1/ayah/${s}:${a}`).then(r => r.json()), 12000);
+    pendingHL = {s, a}; await goPage(j.data.page);
+  } catch(e) {}
+}
+$('#sgo').onclick = searchQ;
+$('#sq').addEventListener('keydown', e => { if (e.key === 'Enter') searchQ(); });
 
 $('#pprev').onclick = () => goPage(cur - 1);
 $('#pnext').onclick = () => goPage(cur + 1);
@@ -1614,6 +1811,441 @@ goPage(cur);
 def mushaf_reader():
     html = MUSHAF_HTML.replace("__HEAD__", FRAME_HEAD).replace("__SURAS__", js_data(SURAS))
     components.html(html, height=1300, scrolling=False)
+
+
+# =====================================================
+# الأذكار (من مصدر موثوق على GitHub: azkar-api) + المسبحة
+# =====================================================
+AZKAR_URL = ("https://raw.githubusercontent.com/nawafalqari/azkar-api/"
+             "56df51279ab6eb86dc2f6202c7de26c8948331c1/azkar.json")
+AZKAR_CATS = {
+    "morning": "أذكار الصباح",
+    "evening": "أذكار المساء",
+    "prayer": "أذكار بعد السلام من الصلاة المفروضة",
+    "sleep": "أذكار النوم",
+}
+
+
+def _clean_dhikr(t: str) -> str:
+    t = (t or "").replace("\\n", " ").replace("', '", " ").replace("\\", " ")
+    t = re.sub(r"\s+", " ", t).strip(" '\"")
+    return t
+
+
+@st.cache_data(ttl=7 * 86400, show_spinner=False)
+def load_azkar():
+    try:
+        req = urllib.request.Request(AZKAR_URL, headers={"User-Agent": "Mozilla/5.0"})
+        with urllib.request.urlopen(req, timeout=15) as r:
+            data = json.loads(r.read().decode("utf-8-sig"))
+        out = {}
+        for key, cat in AZKAR_CATS.items():
+            items = []
+            for x in data.get(cat, []):
+                items.extend(x if isinstance(x, list) else [x])
+            rows = []
+            for it in items:
+                text = _clean_dhikr(it.get("content", ""))
+                if not text:
+                    continue
+                cnt = int(re.sub(r"\D", "", str(it.get("count", "1"))) or 1)
+                rows.append({"t": text, "c": max(1, cnt), "d": _clean_dhikr(it.get("description", ""))})
+            out[key] = rows
+        if any(out.values()):
+            return out
+    except Exception as e:
+        print("Azkar error:", e)
+    return {}
+
+
+ADHKAR_HTML = r"""<!doctype html><html dir="rtl"><head>__HEAD__
+<style>
+h3{margin:0 0 6px;font-size:1.05rem;color:var(--gold-l)}
+.tabs{display:flex;gap:6px;flex-wrap:wrap;justify-content:center;background:var(--surface);border:1px solid var(--border);border-radius:999px;padding:5px;
+  margin:0 auto 14px;width:fit-content;backdrop-filter:blur(10px)}
+.tab{border:none;background:transparent;color:var(--muted);border-radius:999px;padding:7px 16px;font-weight:700;font-size:.9rem;transition:all .2s}
+.tab.on{background:var(--gold);color:var(--on-gold)}
+.prog{height:10px;border-radius:999px;background:var(--surface-2);border:1px solid var(--border);overflow:hidden;margin:10px 0 4px}
+.prog i{display:block;height:100%;width:0;background:linear-gradient(90deg,var(--accent),var(--gold));transition:width .5s ease}
+.ptxt{font-size:.85rem;color:var(--muted);display:flex;justify-content:space-between}
+.list{display:flex;flex-direction:column;gap:10px;margin-top:12px}
+.dk{position:relative;text-align:right;background:var(--surface);border:1px solid var(--border);border-radius:18px;padding:16px 18px 14px;color:var(--text);
+  backdrop-filter:blur(10px);transition:all .25s;cursor:pointer;animation:rise .5s ease both;user-select:none}
+.dk:hover{border-color:var(--border-s)}
+.dk:active{transform:scale(.99)}
+.dk .tx{font-family:'Amiri',serif;font-size:1.3rem;line-height:2.1}
+.dk .ds{font-size:.8rem;color:var(--muted);margin-top:6px;line-height:1.8}
+.dk .ct{position:absolute;left:14px;top:12px;min-width:54px;text-align:center;border-radius:999px;padding:3px 10px;font-weight:700;font-size:.85rem;
+  background:var(--gold-soft);color:var(--gold-l);border:1px solid var(--border-s)}
+.dk .tap{font-size:.75rem;color:var(--muted);margin-top:8px}
+.dk.done{background:var(--accent-soft);border-color:var(--accent);opacity:.75}
+.dk.done .ct{background:var(--accent);color:#fff;border-color:var(--accent)}
+.dk.bump{animation:bump .25s ease}
+@keyframes bump{50%{transform:scale(1.015)}}
+.allDone{text-align:center;font-size:1.15rem;font-weight:700;color:var(--gold-l);padding:14px;line-height:2}
+.row{display:flex;gap:8px;flex-wrap:wrap;align-items:center;justify-content:center}
+/* المسبحة */
+.tsb{display:flex;flex-direction:column;align-items:center;gap:14px;padding:6px 0 10px}
+.chips{display:flex;gap:6px;flex-wrap:wrap;justify-content:center}
+.chip{border:1px solid var(--border);background:var(--surface-2);color:var(--text);border-radius:999px;padding:6px 14px;font-weight:600;font-size:.88rem;transition:all .2s}
+.chip.on{background:var(--gold);color:var(--on-gold);border-color:var(--gold)}
+.bead{width:220px;height:220px;border-radius:50%;border:none;position:relative;color:#fff;
+  background:radial-gradient(circle at 35% 30%, #f3dc9b, var(--gold) 45%, var(--gold-dark));box-shadow:0 18px 40px var(--gold-soft), inset 0 -10px 30px rgba(0,0,0,.25);
+  display:flex;flex-direction:column;align-items:center;justify-content:center;transition:transform .08s;-webkit-tap-highlight-color:transparent}
+.bead:active{transform:scale(.95)}
+.bead .n{font-size:3.4rem;font-weight:700;line-height:1;text-shadow:0 2px 8px rgba(0,0,0,.25)}
+.bead .of{font-size:.95rem;opacity:.9;margin-top:6px}
+.ring{position:absolute;inset:-10px;border-radius:50%;background:conic-gradient(var(--accent) calc(var(--p)*1%), transparent 0);
+  -webkit-mask:radial-gradient(circle, transparent 62%, #000 63%);mask:radial-gradient(circle, transparent 62%, #000 63%);transition:all .2s}
+.bead.hit{animation:hit .6s ease}
+@keyframes hit{30%{transform:scale(1.08);box-shadow:0 0 0 18px var(--gold-soft)}}
+.dname{font-family:'Amiri',serif;font-size:1.8rem;font-weight:700;color:var(--gold-l);text-align:center}
+.stats{display:flex;gap:10px;flex-wrap:wrap;justify-content:center}
+.st{background:var(--surface-2);border:1px solid var(--border);border-radius:14px;padding:8px 14px;text-align:center;min-width:110px}
+.st b{display:block;font-size:1.2rem;color:var(--gold-l)}
+.st span{font-size:.78rem;color:var(--muted)}
+.msg{color:var(--muted);text-align:center;padding:20px;line-height:2}
+</style></head><body>
+<div class="tabs" id="tabs"></div>
+<div id="view"></div>
+<script>
+const AZ = __AZKAR__;
+const $ = s => document.querySelector(s);
+const store = {get(k){try{return JSON.parse(localStorage.getItem(k))}catch(e){return null}}, set(k,v){try{localStorage.setItem(k,JSON.stringify(v))}catch(e){}}};
+const toAr = s => String(s).replace(/\d/g, d => '٠١٢٣٤٥٦٧٨٩'[d]);
+const pad = n => String(n).padStart(2,'0');
+const dkey = d => `${d.getFullYear()}-${pad(d.getMonth()+1)}-${pad(d.getDate())}`;
+const esc = t => String(t).replace(/[&<>"]/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+const vib = p => { try { navigator.vibrate && navigator.vibrate(p); } catch(e) {} };
+const TABS = [['morning','🌅 الصباح'],['evening','🌇 المساء'],['prayer','🕌 بعد الصلاة'],['sleep','🌙 النوم'],['tasbeeh','📿 المسبحة']];
+const h = new Date().getHours();
+let tab = store.get('yq-adh-tab-once') || (h >= 3 && h < 12 ? 'morning' : h < 20 ? 'evening' : 'sleep');
+try { localStorage.removeItem('yq-adh-tab-once'); } catch(e) {}
+
+function renderTabs(){
+  $('#tabs').innerHTML = TABS.map(([k, n]) => `<button class="tab ${k === tab ? 'on' : ''}" data-k="${k}">${n}</button>`).join('');
+  $('#tabs').querySelectorAll('.tab').forEach(b => b.onclick = () => { tab = b.dataset.k; render(); });
+}
+function render(){ renderTabs(); tab === 'tasbeeh' ? renderTasbeeh() : renderAdhkar(); }
+
+// ===== الأذكار =====
+function renderAdhkar(){
+  const list = AZ[tab] || [];
+  if (!list.length) { $('#view').innerHTML = '<div class="card msg">تعذّر تحميل الأذكار الآن، حاول بعد قليل.</div>'; return; }
+  const k = `yq-adh-${dkey(new Date())}-${tab}`;
+  let st = store.get(k); if (!st || st.length !== list.length) st = list.map(() => 0);
+  const total = list.reduce((a, x) => a + x.c, 0), doneN = st.reduce((a, x, i) => a + Math.min(x, list[i].c), 0);
+  const pct = Math.round(doneN / total * 100), all = st.every((x, i) => x >= list[i].c);
+  const title = {morning:'أذكار الصباح', evening:'أذكار المساء', prayer:'الأذكار بعد السلام من الصلاة', sleep:'أذكار النوم'}[tab];
+  $('#view').innerHTML = `
+    <div class="card"><h3>${title}</h3>
+      <div class="prog"><i style="width:${pct}%"></i></div>
+      <div class="ptxt"><span>${toAr(st.filter((x, i) => x >= list[i].c).length)} من ${toAr(list.length)} ذكر</span><span>${toAr(pct)}٪</span></div>
+      ${all ? `<div class="allDone">🌿 أتممت ${title}، تقبّل الله منك<br><button class="btn" id="reset">↺ ابدأ من جديد</button></div>` : '<div class="ptxt" style="margin-top:6px"><span>👆 اضغط على الذكر كل ما قلته، والعدّاد ينقص لحاله</span><button class="btn" id="reset" style="font-size:.75rem;padding:3px 10px">↺ تصفير</button></div>'}
+    </div>
+    <div class="list">${list.map((x, i) => {
+      const left = Math.max(0, x.c - st[i]);
+      return `<div class="dk ${left === 0 ? 'done' : ''}" data-i="${i}" style="animation-delay:${Math.min(i, 10) * 0.04}s">
+        <span class="ct">${left === 0 ? '✓' : toAr(left) + (x.c > 1 ? ' / ' + toAr(x.c) : '')}</span>
+        <div class="tx" style="padding-left:70px">${esc(x.t)}</div>
+        ${x.d ? `<div class="ds">💡 ${esc(x.d)}</div>` : ''}
+      </div>`; }).join('')}</div>`;
+  $('#reset').onclick = () => { store.set(k, list.map(() => 0)); renderAdhkar(); };
+  $('#view').querySelectorAll('.dk').forEach(el => el.onclick = () => {
+    const i = +el.dataset.i; if (st[i] >= list[i].c) return;
+    st[i]++; store.set(k, st); vib(15);
+    const left = list[i].c - st[i];
+    if (left > 0) { el.querySelector('.ct').textContent = toAr(left) + ' / ' + toAr(list[i].c); el.classList.remove('bump'); void el.offsetWidth; el.classList.add('bump'); updateProg(); return; }
+    vib([30, 40, 30]);
+    if (st.every((x, j) => x >= list[j].c)) {
+      if (tab === 'morning' || tab === 'evening') { const L = store.get('yq-adhkar') || {}, d = dkey(new Date()); L[d] = L[d] || {}; L[d][tab] = true; store.set('yq-adhkar', L); }
+      renderAdhkar(); window.scrollTo({top: 0, behavior: 'smooth'}); return;
+    }
+    renderAdhkar();
+    const nx = [...document.querySelectorAll('.dk:not(.done)')][0]; if (nx) nx.scrollIntoView({behavior:'smooth', block:'center'});
+  });
+  function updateProg(){
+    const dn = st.reduce((a, x, i) => a + Math.min(x, list[i].c), 0), p = Math.round(dn / total * 100);
+    $('.prog i').style.width = p + '%'; $('.ptxt span:last-child').textContent = toAr(p) + '٪';
+  }
+}
+
+// ===== المسبحة =====
+const DHIKR = ['سبحان الله', 'الحمد لله', 'الله أكبر', 'لا إله إلا الله', 'أستغفر الله', 'سبحان الله وبحمده', 'لا حول ولا قوة إلا بالله', 'اللهم صلِّ على محمد'];
+function renderTasbeeh(){
+  const T = store.get('yq-tsb') || {d: 0, target: 33, n: 0};
+  const today = dkey(new Date()), day = store.get('yq-tasbeeh') || {}, total = store.get('yq-tasbeeh-total') || 0;
+  const p = T.target ? Math.min(100, (T.n % T.target || (T.n && T.n % T.target === 0 ? T.target : 0)) / T.target * 100) : 0;
+  $('#view').innerHTML = `<div class="card"><div class="tsb">
+    <div class="chips">${DHIKR.map((x, i) => `<button class="chip ${i === T.d ? 'on' : ''}" data-d="${i}">${x}</button>`).join('')}</div>
+    <div class="dname">${DHIKR[T.d]}</div>
+    <button class="bead" id="bead"><span class="ring" style="--p:${p}"></span><span class="n" id="cnt">${toAr(T.n)}</span><span class="of">${T.target ? 'الهدف ' + toAr(T.target) : 'بدون حد'}</span></button>
+    <div class="chips">${[[33,'٣٣'],[100,'١٠٠'],[1000,'١٠٠٠'],[0,'∞ بدون حد']].map(([v, n]) => `<button class="chip ${v === T.target ? 'on' : ''}" data-t="${v}">${n}</button>`).join('')}
+      <button class="chip" id="zero">↺ تصفير</button></div>
+    <div class="stats">
+      <div class="st"><b id="sday">${toAr(day[today] || 0)}</b><span>تسبيحات اليوم</span></div>
+      <div class="st"><b id="stot">${toAr(total)}</b><span>المجموع الكلي</span></div>
+    </div>
+    <div class="ptxt" style="justify-content:center">اضغط على الحبة الذهبية للتسبيح، والجوال يهتز مع كل ضغطة 📳</div>
+  </div></div>`;
+  const save = () => store.set('yq-tsb', T);
+  $('#view').querySelectorAll('[data-d]').forEach(b => b.onclick = () => { T.d = +b.dataset.d; T.n = 0; save(); renderTasbeeh(); });
+  $('#view').querySelectorAll('[data-t]').forEach(b => b.onclick = () => { T.target = +b.dataset.t; T.n = 0; save(); renderTasbeeh(); });
+  $('#zero').onclick = () => { T.n = 0; save(); renderTasbeeh(); };
+  $('#bead').onclick = () => {
+    T.n++; save();
+    const d = store.get('yq-tasbeeh') || {}; d[today] = (d[today] || 0) + 1; store.set('yq-tasbeeh', d);
+    const tot = (store.get('yq-tasbeeh-total') || 0) + 1; store.set('yq-tasbeeh-total', tot);
+    $('#cnt').textContent = toAr(T.n); $('#sday').textContent = toAr(d[today]); $('#stot').textContent = toAr(tot);
+    const bead = $('#bead');
+    if (T.target && T.n % T.target === 0) {
+      vib([60, 50, 60]); bead.classList.remove('hit'); void bead.offsetWidth; bead.classList.add('hit');
+      bead.querySelector('.ring').style.setProperty('--p', 100);
+    } else {
+      vib(12);
+      bead.querySelector('.ring').style.setProperty('--p', T.target ? (T.n % T.target) / T.target * 100 : 0);
+    }
+  };
+}
+render();
+</script></body></html>"""
+
+
+def adhkar_page():
+    html = ADHKAR_HTML.replace("__HEAD__", FRAME_HEAD).replace("__AZKAR__", js_data(load_azkar()))
+    components.html(html, height=900, scrolling=False)
+
+
+# =====================================================
+# إنجازاتي — كل البيانات محفوظة في متصفح الزائر نفسه
+# =====================================================
+ACH_HTML = r"""<!doctype html><html dir="rtl"><head>__HEAD__
+<style>
+h3{margin:0 0 10px;font-size:1.05rem;color:var(--gold-l)}
+.stats{display:grid;grid-template-columns:repeat(4,1fr);gap:12px}
+.sc{background:var(--surface);border:1px solid var(--border);border-radius:20px;padding:16px 10px;text-align:center;backdrop-filter:blur(10px);animation:rise .6s ease both}
+.sc .ic{font-size:1.7rem}
+.sc b{display:block;font-size:2rem;color:var(--gold-l);line-height:1.3}
+.sc span{font-size:.8rem;color:var(--muted)}
+.sc.fire b{background:linear-gradient(90deg,#e8833a,var(--gold));-webkit-background-clip:text;background-clip:text;color:transparent}
+.heat{display:grid;grid-template-columns:repeat(15,1fr);gap:5px;margin-top:6px}
+.cell{aspect-ratio:1;border-radius:6px;background:var(--surface-2);border:1px solid var(--border);position:relative}
+.cell.l1{background:rgba(63,157,122,.25)}.cell.l2{background:rgba(63,157,122,.45)}.cell.l3{background:rgba(63,157,122,.65)}
+.cell.l4{background:rgba(63,157,122,.82)}.cell.l5{background:var(--accent);box-shadow:0 0 8px var(--accent-soft)}
+.cell.today{outline:2px solid var(--gold);outline-offset:1px}
+.legend{display:flex;gap:6px;align-items:center;justify-content:flex-start;font-size:.75rem;color:var(--muted);margin-top:8px}
+.legend .cell{width:14px;height:14px}
+.badges{display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:12px}
+.bd{background:var(--surface-2);border:1px solid var(--border);border-radius:18px;padding:14px 10px;text-align:center;transition:all .3s;animation:rise .6s ease both}
+.bd .bi{font-size:2.2rem;width:64px;height:64px;margin:0 auto 6px;border-radius:50%;display:flex;align-items:center;justify-content:center;
+  background:var(--surface);border:1px solid var(--border)}
+.bd .bn{font-weight:700;font-size:.92rem}
+.bd .bx{font-size:.75rem;color:var(--muted);line-height:1.7;margin-top:2px}
+.bd .bp{height:6px;border-radius:999px;background:var(--surface);overflow:hidden;margin-top:8px}
+.bd .bp i{display:block;height:100%;background:var(--gold)}
+.bd.lock{filter:grayscale(1);opacity:.55}
+.bd.got{border-color:var(--border-s);background:linear-gradient(160deg,var(--gold-soft),var(--accent-soft))}
+.bd.got .bi{background:radial-gradient(circle at 35% 30%,#f3dc9b,var(--gold));border-color:var(--gold);box-shadow:0 0 0 5px var(--gold-soft);animation:glow 3s ease-in-out infinite}
+@keyframes glow{50%{box-shadow:0 0 0 9px var(--gold-soft)}}
+.note{font-size:.8rem;color:var(--muted);text-align:center;margin-top:12px}
+@media (max-width:720px){.stats{grid-template-columns:repeat(2,1fr)}.heat{grid-template-columns:repeat(10,1fr)}}
+</style></head><body>
+<div class="stats" id="stats"></div>
+<div class="card" style="margin-top:14px"><h3>🕌 صلواتك آخر ٣٠ يوم</h3><div class="heat" id="heat"></div>
+  <div class="legend">أقل <span class="cell"></span><span class="cell l2"></span><span class="cell l4"></span><span class="cell l5"></span> ٥ صلوات</div></div>
+<div class="card" style="margin-top:14px"><h3>🏅 الشارات</h3><div class="badges" id="badges"></div></div>
+<div class="note">📱 إنجازاتك محفوظة على هذا الجهاز وهذا المتصفح.</div>
+<script>
+const $ = s => document.querySelector(s);
+const store = {get(k){try{return JSON.parse(localStorage.getItem(k))}catch(e){return null}}};
+const toAr = s => String(s).replace(/\d/g, d => '٠١٢٣٤٥٦٧٨٩'[d]);
+const pad = n => String(n).padStart(2,'0');
+const dkey = d => `${d.getFullYear()}-${pad(d.getMonth()+1)}-${pad(d.getDate())}`;
+const ago = n => { const d = new Date(); d.setDate(d.getDate() - n); return dkey(d); };
+const P = ['Fajr','Dhuhr','Asr','Maghrib','Isha'];
+
+function streak(ok){            // أيام متتالية حتى اليوم (أو أمس إذا اليوم ما اكتمل)
+  let s = 0, i = ok(ago(0)) ? 0 : 1;
+  while (ok(ago(i)) && i < 3650) { s++; i++; }
+  return s;
+}
+function render(){
+  const log = store.get('yq-log') || {}, adh = store.get('yq-adhkar') || {}, plan = store.get('yq-plan');
+  const wlog = Object.assign({}, store.get('yq-wird-log') || {}, plan && plan.log ? plan.log : {});
+  const cnt = k => P.filter(p => (log[k] || {})[p]).length;
+  const prayStreak = streak(k => cnt(k) === 5);
+  const wirdStreak = streak(k => (wlog[k] || 0) > 0);
+  const adhDays = Object.values(adh).filter(x => x.morning && x.evening).length;
+  const adhStreak = streak(k => (adh[k] || {}).morning || (adh[k] || {}).evening);
+  const tsb = store.get('yq-tasbeeh-total') || 0;
+  const fullDays = Object.keys(log).filter(k => cnt(k) === 5).length;
+  const totalPr = Object.keys(log).reduce((a, k) => a + cnt(k), 0);
+  const khatmas = store.get('yq-khatmas') || 0, hifz = store.get('yq-hifz-done') || 0;
+
+  $('#stats').innerHTML = [
+    ['🔥', prayStreak, 'أيام متتالية بدون ما تفوتك صلاة', 'fire'],
+    ['📖', wirdStreak, 'أيام متتالية في وردك', ''],
+    ['🌅', adhStreak, 'أيام متتالية مع الأذكار', ''],
+    ['📿', tsb, 'مجموع تسبيحاتك', ''],
+  ].map(([i, n, t, c], j) => `<div class="sc ${c}" style="animation-delay:${j*0.08}s"><div class="ic">${i}</div><b>${toAr(n)}</b><span>${t}</span></div>`).join('');
+
+  let hm = '';
+  for (let i = 29; i >= 0; i--) { const k = ago(i), c = cnt(k); hm += `<div class="cell l${c} ${i === 0 ? 'today' : ''}" title="${k}: ${c}/5"></div>`; }
+  $('#heat').innerHTML = hm;
+
+  const B = [
+    ['🌟', 'يوم كامل', 'أتممت الصلوات الخمس في يوم', fullDays, 1],
+    ['🔥', 'ثلاثة أيام', '٣ أيام متتالية بدون ما تفوتك صلاة', prayStreak, 3],
+    ['💎', 'أسبوع ذهبي', '٧ أيام متتالية بدون ما تفوتك صلاة', prayStreak, 7],
+    ['👑', 'شهر من النور', '٣٠ يوم متتالي بدون ما تفوتك صلاة', prayStreak, 30],
+    ['🕌', 'مئة صلاة', 'سجّلت ١٠٠ صلاة', totalPr, 100],
+    ['📖', 'بداية الورد', '٣ أيام متتالية في وردك', wirdStreak, 3],
+    ['📚', 'أسبوع مع القرآن', '٧ أيام متتالية في وردك', wirdStreak, 7],
+    ['🏆', 'الختمة الأولى', 'أتممت خطة ختمة', khatmas, 1],
+    ['🧠', 'حافظ', 'أتممت خطة حفظ', hifz, 1],
+    ['🌅', 'المحافظ على الأذكار', 'أذكار الصباح والمساء ٧ أيام', adhDays, 7],
+    ['📿', 'ألف تسبيحة', 'سبّحت ١٠٠٠ مرة', tsb, 1000],
+    ['✨', 'عشرة آلاف', 'سبّحت ١٠٠٠٠ مرة', tsb, 10000],
+  ];
+  $('#badges').innerHTML = B.map(([i, n, d, v, goal], j) => {
+    const got = v >= goal, p = Math.min(100, Math.round(v / goal * 100));
+    return `<div class="bd ${got ? 'got' : 'lock'}" style="animation-delay:${j*0.04}s"><div class="bi">${i}</div><div class="bn">${n}</div><div class="bx">${d}</div>
+      ${got ? '<div class="bx" style="color:var(--accent);font-weight:700">✓ حصلت عليها</div>' : `<div class="bp"><i style="width:${p}%"></i></div><div class="bx">${toAr(Math.min(v, goal))} / ${toAr(goal)}</div>`}</div>`;
+  }).join('');
+}
+render();
+addEventListener('storage', render);
+</script></body></html>"""
+
+
+def achievements_page():
+    components.html(ACH_HTML.replace("__HEAD__", FRAME_HEAD), height=1100, scrolling=False)
+
+
+# =====================================================
+# عدّاد المناسبات (رمضان والأعياد) — حسب تقويم أم القرى
+# =====================================================
+EVENTS_HTML = r"""<!doctype html><html dir="rtl"><head>__HEAD__
+<style>
+.ev{display:grid;grid-template-columns:repeat(4,1fr);gap:10px}
+.e{background:var(--surface);border:1px solid var(--border);border-radius:18px;padding:12px 8px;text-align:center;backdrop-filter:blur(10px);
+  transition:transform .3s,border-color .3s;animation:rise .6s ease both}
+.e:hover{transform:translateY(-4px);border-color:var(--border-s)}
+.e .i{font-size:1.6rem}.e .n{font-weight:700;font-size:.92rem;margin-top:2px}
+.e .d{color:var(--gold-l);font-weight:700;font-size:1.25rem}.e .s{font-size:.72rem;color:var(--muted)}
+.e.now{background:linear-gradient(160deg,var(--gold-soft),var(--accent-soft));border-color:var(--gold)}
+.rm{text-align:center;font-family:'Amiri',serif;font-size:1.4rem;font-weight:700;color:var(--gold-l);margin-bottom:10px}
+.note{font-size:.72rem;color:var(--muted);text-align:center;margin-top:8px}
+@media (max-width:720px){.ev{grid-template-columns:repeat(2,1fr)}}
+</style></head><body>
+<div id="rm"></div><div class="ev" id="ev"></div>
+<div class="note">التواريخ تقريبية حسب تقويم أم القرى، وقد تختلف يومًا برؤية الهلال.</div>
+<script>
+const $ = s => document.querySelector(s);
+const store = {get(k){try{return JSON.parse(localStorage.getItem(k))}catch(e){return null}}, set(k,v){try{localStorage.setItem(k,JSON.stringify(v))}catch(e){}}};
+const toAr = s => String(s).replace(/\d/g, d => '٠١٢٣٤٥٦٧٨٩'[d]);
+const pad = n => String(n).padStart(2,'0');
+const EV = [[1,9,'رمضان المبارك','🌙'],[1,10,'عيد الفطر','🎉'],[9,12,'يوم عرفة','🕋'],[10,12,'عيد الأضحى','🐑'],[1,1,'رأس السنة الهجرية','📅'],[10,1,'يوم عاشوراء','✨']];
+async function getJ(u){ const c = store.get('yq-ev-' + u); if (c) return c; const j = await (await fetch(u)).json(); if (j && j.data) store.set('yq-ev-' + u, j.data); return j.data; }
+(async () => {
+  try {
+    const now = new Date(), ds = `${pad(now.getDate())}-${pad(now.getMonth()+1)}-${now.getFullYear()}`;
+    const H = (await getJ(`https://api.aladhan.com/v1/gToH/${ds}`)).hijri;
+    const D = +H.day, M = +H.month.number, Y = +H.year;
+    if (M === 9) $('#rm').innerHTML = `<div class="rm">🌙 رمضان كريم — اليوم ${toAr(D)} من رمضان</div>`;
+    const t0 = new Date(now.getFullYear(), now.getMonth(), now.getDate());
+    const list = [];
+    for (const [d, m, n, i] of EV) {
+      const y = (m > M || (m === M && d >= D)) ? Y : Y + 1;
+      const g = (await getJ(`https://api.aladhan.com/v1/hToG/${pad(d)}-${pad(m)}-${y}`)).gregorian.date.split('-').map(Number);
+      const days = Math.round((new Date(g[2], g[1]-1, g[0]) - t0) / 86400000);
+      list.push({n, i, days});
+    }
+    list.sort((a, b) => a.days - b.days);
+    $('#ev').innerHTML = list.slice(0, 4).map((e, j) => `<div class="e ${e.days === 0 ? 'now' : ''}" style="animation-delay:${j*0.08}s"><div class="i">${e.i}</div><div class="n">${e.n}</div>
+      ${e.days === 0 ? '<div class="d">اليوم 🎉</div>' : `<div class="s">باقي</div><div class="d">${toAr(e.days)}</div><div class="s">${e.days === 1 ? 'يوم' : e.days <= 10 ? 'أيام' : 'يومًا'}</div>`}</div>`).join('');
+  } catch(e) { document.body.innerHTML = ''; }
+})();
+</script></body></html>"""
+
+
+def events_widget():
+    components.html(EVENTS_HTML.replace("__HEAD__", FRAME_HEAD), height=200, scrolling=False)
+
+
+# =====================================================
+# أدوات تحت كل إجابة: نسخ + مشاركة + تنبيه
+# =====================================================
+ANSWER_TOOLS_HTML = r"""<!doctype html><html dir="rtl"><head>__HEAD__
+<style>body{padding:2px 2px}.row{display:flex;gap:8px;align-items:center;flex-wrap:wrap}
+.btn{font-size:.78rem;padding:4px 12px}.note{font-size:.76rem;color:var(--muted)}</style></head><body>
+<div class="row"><button class="btn" id="cp">📋 نسخ</button><button class="btn" id="sh">📤 مشاركة</button>
+<span class="note">⚠️ إجابة آلية للاستئناس، وللفتوى راجع أهل العلم.</span></div>
+<script>
+const T = __TEXT__;
+let link = ''; try { link = parent.location.origin; } catch(e) {}
+const full = T.replace(/\*\*/g, '').replace(/^#+\s*/gm, '') + '\n\n— من منصة اليقين' + (link ? ' ' + link : '');
+const done = (b, t) => { const o = b.textContent; b.textContent = t; setTimeout(() => b.textContent = o, 1800); };
+document.getElementById('cp').onclick = async (e) => {
+  const b = e.currentTarget;
+  try { await navigator.clipboard.writeText(full); return done(b, '✅ تم النسخ'); } catch(err) {}
+  try { await parent.navigator.clipboard.writeText(full); return done(b, '✅ تم النسخ'); } catch(err) {}
+  const ta = document.createElement('textarea'); ta.value = full; document.body.appendChild(ta); ta.select();
+  try { document.execCommand('copy'); done(b, '✅ تم النسخ'); } catch(err) { done(b, 'ما قدرت أنسخ'); } ta.remove();
+};
+document.getElementById('sh').onclick = async () => {
+  const nav = (() => { try { return parent.navigator.share ? parent.navigator : navigator; } catch(e) { return navigator; } })();
+  try { if (nav.share) { await nav.share({title: 'منصة اليقين', text: full}); return; } } catch(err) { if (err && err.name === 'AbortError') return; }
+  window.open('https://wa.me/?text=' + encodeURIComponent(full.slice(0, 3500)), '_blank');
+};
+</script></body></html>"""
+
+
+def answer_tools(text: str, key: str):
+    html = ANSWER_TOOLS_HTML.replace("__HEAD__", FRAME_HEAD).replace("__TEXT__", js_data(text))
+    components.html(html, height=42, scrolling=False)
+
+
+# =====================================================
+# حد يومي للأسئلة لكل زائر (يحمي مفتاح Gemini)
+# =====================================================
+DAILY_LIMIT = 25
+
+
+@st.cache_resource
+def usage_store():
+    return {"day": "", "counts": {}}
+
+
+def visitor_id() -> str:
+    ip = None
+    try:
+        ip = st.context.ip_address
+    except Exception:
+        pass
+    if not ip:
+        try:
+            ip = (st.context.headers.get("X-Forwarded-For") or "").split(",")[0].strip() or None
+        except Exception:
+            pass
+    if not ip:
+        if "vid" not in st.session_state:
+            st.session_state.vid = str(time.time_ns())
+        ip = st.session_state.vid
+    return ip
+
+
+def take_quota() -> bool:
+    u = usage_store()
+    today = time.strftime("%Y-%m-%d")
+    if u["day"] != today:
+        u["day"], u["counts"] = today, {}
+    vid = visitor_id()
+    n = u["counts"].get(vid, 0)
+    if n >= DAILY_LIMIT:
+        return False
+    u["counts"][vid] = n + 1
+    return True
 
 
 def quran_player():
@@ -1794,7 +2426,7 @@ def clear_chat(mode: str):
 # 10) شريط التنقل العلوي + الشريط الجانبي
 # =====================================================
 with st.container(key="topnav"):
-    c_brand, c_nav = st.columns([1.1, 4], vertical_alignment="center")
+    c_brand, c_nav = st.columns([1, 5], vertical_alignment="center")
     with c_brand:
         st.markdown('<div class="brand"><span class="lamp">🏮</span><span class="name">منصة اليقين</span></div>',
                     unsafe_allow_html=True)
@@ -1829,6 +2461,8 @@ GREETINGS = {
     "dialogue": "أهلًا بك في قاعة الحوار! اسأل عن أي شيء يخص الإسلام بكل حرية 🤝",
     "quran": "اختر قارئك المفضّل والسورة، واستمع بخشوع 🎧",
     "prayer": "هنا مواقيت الصلاة في مدينتك، واتجاه القبلة، وأقرب المساجد لك 🕌",
+    "adhkar": "اضغط على الذكر كل ما قلته، وأنا أعدّ معك 📿",
+    "achieve": "شوف إنجازاتك، الله يثبتك ويزيدك 🏆",
 }
 
 # =====================================================
@@ -1853,6 +2487,9 @@ if page == "home":
 
     prayer_widget("compact", 300)
 
+    st.markdown('<div class="section-title">📅 المناسبات القادمة</div>', unsafe_allow_html=True)
+    events_widget()
+
     st.markdown('<div class="section-title">✨ استكشف المنصة</div>', unsafe_allow_html=True)
     cards = [
         ("💬", "اسأل نور", "اطرح سؤالك الشرعي أو الشبهة، وخذ إجابة موثّقة بالدليل.", PAGES[1]),
@@ -1861,8 +2498,11 @@ if page == "home":
         ("🕰️", "مواقيت الصلاة", "مواقيت مدينتك، وسجل صلواتك، وتذكير بعد كل صلاة.", PAGES[4]),
         ("🕌", "أقرب مسجد", "المساجد القريبة منك مع المسافة والاتجاهات.", PAGES[4]),
         ("🧭", "اتجاه القبلة", "اعرف اتجاه القبلة من موقعك الحالي.", PAGES[4]),
+        ("🌅", "أذكار الصباح والمساء", "الأذكار مع عدّاد، ونور يذكّرك فيها كل يوم.", PAGES[5]),
+        ("📿", "المسبحة", "سبّح بضغطة، ويحفظ لك مجموع تسبيحاتك.", PAGES[5]),
+        ("🏆", "إنجازاتي", "سلسلة صلواتك وأيام وردك، والشارات اللي حصلتها.", PAGES[6]),
     ]
-    for row in range(2):
+    for row in range(3):
         cols = st.columns(3)
         for j in range(3):
             i = row * 3 + j
@@ -1918,6 +2558,39 @@ elif page == "prayer":
     mascot("prayer-idle", "idle", "prayer", GREETINGS["prayer"])
 
 # =====================================================
+# 13-ب) الأذكار والمسبحة / إنجازاتي
+# =====================================================
+elif page == "adhkar":
+    st.markdown(
+        """
+<div class="hero">
+  <span class="badge">الأذكار والتسبيح</span>
+  <h1>أذكار المسلم</h1>
+  <div class="ornament">۞</div>
+  <p>«أَلَا بِذِكْرِ اللَّهِ تَطْمَئِنُّ الْقُلُوبُ» — اضغط على الذكر كل ما قلته، والعدّاد يحسب معك.</p>
+</div>
+""",
+        unsafe_allow_html=True,
+    )
+    adhkar_page()
+    mascot("adhkar-idle", "idle", "adhkar", GREETINGS["adhkar"])
+
+elif page == "achieve":
+    st.markdown(
+        """
+<div class="hero">
+  <span class="badge">إنجازاتي</span>
+  <h1>رحلتك مع الطاعة</h1>
+  <div class="ornament">۞</div>
+  <p>سلسلة صلواتك، وأيام وردك، وأذكارك، وتسبيحاتك، والشارات اللي حصلتها.</p>
+</div>
+""",
+        unsafe_allow_html=True,
+    )
+    achievements_page()
+    mascot("achieve-idle", "idle", "achieve", GREETINGS["achieve"])
+
+# =====================================================
 # 14) صفحات المحادثة (اسأل نور / قاعة الحوار)
 # =====================================================
 else:
@@ -1968,19 +2641,28 @@ else:
         with st.container(key="clearchat"):
             st.button("🗑️ محادثة جديدة", key=f"clear_{mode}", on_click=clear_chat, args=(mode,))
 
-    for m in messages:
+    for idx, m in enumerate(messages):
         with st.chat_message(m["role"], avatar="🧑" if m["role"] == "user" else "🏮"):
             st.markdown(m["content"])
+            if m["role"] == "assistant" and not m["content"].startswith("⚠️"):
+                answer_tools(m["content"], f"{mode}-{idx}")
 
     if prompt := st.chat_input(placeholder):
         messages.append({"role": "user", "content": prompt})
         st.rerun()
 
     # توليد الإجابة إذا كانت آخر رسالة من المستخدم
+    if messages and messages[-1]["role"] == "user" and not take_quota():
+        msg = (f"⚠️ وصلت للحد اليومي ({DAILY_LIMIT} سؤال) عشان تبقى الخدمة متاحة للجميع. "
+               "ارجع بكرة إن شاء الله، وتقدر الحين تقرأ المصحف أو تذكر الله 🌿")
+        messages.append({"role": "assistant", "content": msg})
+        st.rerun()
     if messages and messages[-1]["role"] == "user":
         mascot(f"{mode}-{len(messages)}-thinking", "thinking", mode, GREETINGS[mode])
         with st.chat_message("assistant", avatar="🏮"):
             answer = st.write_stream(stream_answer(mode, messages))
+            if isinstance(answer, str) and not answer.startswith("⚠️"):
+                answer_tools(answer, f"{mode}-{len(messages)}")
         messages.append({"role": "assistant", "content": answer})
         mascot(f"{mode}-{len(messages)}-answer", "answer", mode, GREETINGS[mode], text=answer)
     else:
